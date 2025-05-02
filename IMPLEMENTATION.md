@@ -1,63 +1,46 @@
 # Implementation Plan
 
-## Phase 1: Local Preprocessing (Deduplication-First)
+## Phase 1: Local Preprocessing
 
 ### 1.1 Image Deduplication
 
-- [ ] Set up Python environment with required dependencies
-  - imagehash
-  - Pillow
-  - OpenCV (optional)
-- [ ] Implement perceptual hashing algorithm
-  - Test both pHash and aHash approaches
-  - Determine optimal threshold for similarity
-- [ ] Create deduplication script
-  - Input: Source directory
-  - Output: Clean directory + archive directory
-  - Logging and reporting
+- [ ] Set up and test deduplication script
+- [ ] Process photos and verify results
+- [ ] Organize output into clean/archive directories
 
 ### 1.2 File Organization
 
-- [ ] Implement optional EXIF-based renaming
-  - Fallback to hash-based naming
-  - Preserve original names as metadata
-- [ ] Create directory structure
-  - photos-clean/
-  - dedupe-archive/
+- [ ] Implement EXIF-based renaming
+- [ ] Set up directory structure for upload
 
-## Phase 2: Cloud Infrastructure
+## Phase 2: Gallery Setup
 
 ### 2.1 Fly.io Setup
 
-- [ ] Install and configure Fly.io CLI
-- [ ] Create Fly.io application
-- [ ] Set up persistent volume
-- [ ] Configure networking and security
+- [ ] Deploy Photoview instance
+- [ ] Configure storage and networking
 
-### 2.2 Photoview Deployment
+### 2.2 Gallery Configuration
 
-- [ ] Clone and configure Photoview
-- [ ] Set up Docker environment
-- [ ] Configure volume mounts
-- [ ] Deploy initial instance
+- [ ] Set up user access
+- [ ] Configure sharing options
+- [ ] Test basic functionality
 
-## Phase 3: Data Migration & Validation
+## Phase 3: Data Migration
 
-### 3.1 Upload Strategy
+### 3.1 Upload Process
 
-- [ ] Implement automated upload process
-- [ ] Test with sample dataset
-- [ ] Monitor transfer performance
-
-### 3.2 Validation
-
-- [ ] Verify deduplication results
-- [ ] Check metadata preservation
+- [ ] Implement bulk upload
+- [ ] Verify metadata preservation
 - [ ] Test timeline view
-- [ ] Validate sharing functionality
+
+### 3.2 Final Validation
+
+- [ ] Check deduplication results
+- [ ] Verify gallery functionality
+- [ ] Test sharing features
 
 ## Notes
 
-- Each phase can be iterated on independently
+- Each phase can be worked on independently
 - Testing should be performed at each step
-- Performance metrics should be collected
