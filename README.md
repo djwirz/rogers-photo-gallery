@@ -112,17 +112,13 @@ See [IMPLEMENTATION.md](IMPLEMENTATION.md) for detailed implementation steps and
    flyctl auth login
    ```
 
-2. Create volumes for persistent storage (create two volumes in different regions for redundancy):
+2. Create the volume for persistent storage:
 
    ```bash
-   # Create primary volume in SJC (Silicon Valley)
-   flyctl volumes create photoview_data_1 --size 1 --region sjc
-
-   # Create backup volume in LAX (Los Angeles)
-   flyctl volumes create photoview_data_2 --size 1 --region lax
+   flyctl volumes create photoview_data --size 1 --region sjc
    ```
 
-   Note: The volume size is set to 1GB to accommodate the current photo collection (694MB) with room for future additions. We create two volumes for redundancy to avoid downtime.
+   Note: The volume size is set to 1GB to accommodate the current photo collection (694MB) with room for future additions. Your local photos serve as the backup, so no additional backup volumes are needed.
 
 3. Deploy the application:
 

@@ -48,20 +48,19 @@ primary_region = "sjc"
   PHOTOVIEW_DISABLE_ALBUM_PEOPLE_PHOTOS = "true"
   PHOTOVIEW_DISABLE_ALBUM_FAVORITES_PHOTOS = "true"
   PHOTOVIEW_DISABLE_ALBUM_ARCHIVE_PHOTOS = "true"
+  PORT = "8080"
+  PHOTOVIEW_PORT = "8080"
+  PHOTOVIEW_LISTEN_IP = "0.0.0.0"
+  PHOTOVIEW_LISTEN_PORT = "8080"
 
-[[mounts]]
-  source = "photoview_data_1"
+[mounts]
+  source = "photoview_data"
   destination = "/data"
-  initial_size = "1GB"
-
-[[mounts]]
-  source = "photoview_data_2"
-  destination = "/data/backup"
   initial_size = "1GB"
 
 [[services]]
   protocol = "tcp"
-  internal_port = 80
+  internal_port = 8080
   processes = ["app"]
 
   [[services.ports]]
