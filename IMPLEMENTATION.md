@@ -4,14 +4,14 @@
 
 ### 1.1 Image Deduplication
 
-- [ ] Set up and test deduplication script
-- [ ] Process photos and verify results
-- [ ] Organize output into clean/archive directories
+- [x] Set up and test deduplication script
+- [x] Process photos and verify results
+- [x] Organize output into clean/archive directories
 
 ### 1.2 File Organization
 
-- [ ] Implement EXIF-based renaming
-- [ ] Set up directory structure for upload
+- [x] Implement EXIF-based renaming
+- [x] Set up directory structure for upload
 
 ## Phase 2: Gallery Setup
 
@@ -44,3 +44,8 @@
 
 - Each phase can be worked on independently
 - Testing should be performed at each step
+- EXIF date extraction now handles:
+  - Historical photos (1800s-1970s)
+  - Scan dates (skipping 2009)
+  - Multiple date sources (EXIF, filename patterns, file metadata)
+  - Appropriate fallback dates for different photo sets
