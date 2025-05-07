@@ -2,9 +2,36 @@
 
 ## Current Status
 
+- [ ] Initial testing with small photo batch
+- [ ] Persistence verification
+- [ ] Display quality validation
 - [ ] Bulk upload implementation
 - [ ] Metadata verification
 - [ ] Timeline view testing
+
+## Testing Strategy
+
+1. Small Batch Testing
+
+   - Select 5-10 photos for initial testing
+   - Verify EXIF data before upload
+   - Test upload process
+   - Validate display and metadata
+   - Document any issues
+
+2. Persistence Testing
+
+   - Verify data persistence after service restart
+   - Check metadata retention
+   - Validate timeline view consistency
+   - Test navigation persistence
+
+3. Display Testing
+   - Verify thumbnail generation
+   - Test full-screen view
+   - Check zoom functionality
+   - Validate loading performance
+   - Test different photo formats
 
 ## Technical Constraints
 
@@ -53,8 +80,10 @@
 
 ## Next Steps
 
-- Implement bulk upload
-- Test with small batches
-- Verify metadata
-- Check timeline view
-- Document process
+1. Select and verify test photo batch
+2. Run initial upload test
+3. Verify persistence
+4. Test display functionality
+5. Document findings
+6. Proceed with bulk upload implementation
+7. Scale testing with larger batches
