@@ -1,2 +1,7 @@
+# Phase 1: Local Processing
 Pillow>=10.0.0
-imagehash>=4.3.1 
+imagehash>=4.3.1
+
+# Phase 2: Deployment
+flyctl>=0.1.0  # For Fly.io deployment
+docker>=6.0.0  # For container management 

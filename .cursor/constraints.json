@@ -1,0 +1,52 @@
+{
+  "project": {
+    "name": "Rogers Photo Gallery",
+    "type": "family photo gallery",
+    "scale": {
+      "photos": 3000,
+      "storage": "1GB"
+    }
+  },
+  "technical_constraints": {
+    "metadata": {
+      "preserve": ["EXIF", "IPTC"],
+      "required": true
+    },
+    "interface": {
+      "type": "family-friendly",
+      "complexity": "minimal"
+    },
+    "maintenance": {
+      "level": "minimal",
+      "automation": "preferred"
+    }
+  },
+  "implementation_phases": {
+    "current_phase": 2,
+    "allowed_features": [
+      "flyio_deployment",
+      "photoview_setup",
+      "basic_auth",
+      "simple_sharing"
+    ],
+    "blocked_features": [
+      "complex_auth",
+      "custom_ui",
+      "advanced_features",
+      "proprietary_formats"
+    ]
+  },
+  "file_structure": {
+    "required_directories": [
+      "deduplicated_photos",
+      "photos_to_process",
+      "duplicate_photos"
+    ],
+    "allowed_extensions": [".jpg", ".jpeg", ".png"]
+  },
+  "deployment": {
+    "platform": "fly.io",
+    "application": "photoview",
+    "requirements": ["persistent_storage", "basic_auth", "simple_sharing"]
+  }
+}

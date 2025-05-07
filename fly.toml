@@ -1,0 +1,84 @@
+app = "rogers-photo-gallery"
+primary_region = "sjc"
+
+[build]
+  image = "photoview/photoview:latest"
+
+[env]
+  PHOTOVIEW_DATABASE_DRIVER = "sqlite"
+  PHOTOVIEW_DATABASE_PATH = "/data/photoview.db"
+  PHOTOVIEW_MEDIA_CACHE = "/data/cache"
+  PHOTOVIEW_SERVE_UI = "true"
+  PHOTOVIEW_DISABLE_ALBUMS = "false"
+  PHOTOVIEW_DISABLE_SHARING = "false"
+  PHOTOVIEW_DISABLE_VIDEOS = "true"
+  PHOTOVIEW_DISABLE_RAW = "true"
+  PHOTOVIEW_DISABLE_FACES = "true"
+  PHOTOVIEW_DISABLE_MAP = "true"
+  PHOTOVIEW_DISABLE_TIMELINE = "false"
+  PHOTOVIEW_DISABLE_ARCHIVE = "true"
+  PHOTOVIEW_DISABLE_FAVORITES = "false"
+  PHOTOVIEW_DISABLE_ALBUM_SHARING = "false"
+  PHOTOVIEW_DISABLE_PUBLIC_SHARING = "true"
+  PHOTOVIEW_DISABLE_ALBUM_DOWNLOAD = "true"
+  PHOTOVIEW_DISABLE_ALBUM_DELETE = "true"
+  PHOTOVIEW_DISABLE_ALBUM_EDIT = "true"
+  PHOTOVIEW_DISABLE_ALBUM_CREATE = "true"
+  PHOTOVIEW_DISABLE_ALBUM_MOVE = "true"
+  PHOTOVIEW_DISABLE_ALBUM_COPY = "true"
+  PHOTOVIEW_DISABLE_ALBUM_RENAME = "true"
+  PHOTOVIEW_DISABLE_ALBUM_DESCRIPTION = "true"
+  PHOTOVIEW_DISABLE_ALBUM_COVER = "true"
+  PHOTOVIEW_DISABLE_ALBUM_DATE = "true"
+  PHOTOVIEW_DISABLE_ALBUM_LOCATION = "true"
+  PHOTOVIEW_DISABLE_ALBUM_TAGS = "true"
+  PHOTOVIEW_DISABLE_ALBUM_PEOPLE = "true"
+  PHOTOVIEW_DISABLE_ALBUM_FAVORITES = "true"
+  PHOTOVIEW_DISABLE_ALBUM_ARCHIVE = "true"
+  PHOTOVIEW_DISABLE_ALBUM_DELETE_PHOTOS = "true"
+  PHOTOVIEW_DISABLE_ALBUM_EDIT_PHOTOS = "true"
+  PHOTOVIEW_DISABLE_ALBUM_MOVE_PHOTOS = "true"
+  PHOTOVIEW_DISABLE_ALBUM_COPY_PHOTOS = "true"
+  PHOTOVIEW_DISABLE_ALBUM_RENAME_PHOTOS = "true"
+  PHOTOVIEW_DISABLE_ALBUM_DESCRIPTION_PHOTOS = "true"
+  PHOTOVIEW_DISABLE_ALBUM_COVER_PHOTOS = "true"
+  PHOTOVIEW_DISABLE_ALBUM_DATE_PHOTOS = "true"
+  PHOTOVIEW_DISABLE_ALBUM_LOCATION_PHOTOS = "true"
+  PHOTOVIEW_DISABLE_ALBUM_TAGS_PHOTOS = "true"
+  PHOTOVIEW_DISABLE_ALBUM_PEOPLE_PHOTOS = "true"
+  PHOTOVIEW_DISABLE_ALBUM_FAVORITES_PHOTOS = "true"
+  PHOTOVIEW_DISABLE_ALBUM_ARCHIVE_PHOTOS = "true"
+
+[[mounts]]
+  source = "photoview_data_1"
+  destination = "/data"
+  initial_size = "1GB"
+
+[[mounts]]
+  source = "photoview_data_2"
+  destination = "/data/backup"
+  initial_size = "1GB"
+
+[[services]]
+  protocol = "tcp"
+  internal_port = 80
+  processes = ["app"]
+
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+    force_https = true
+
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
+
+  [services.concurrency]
+    type = "connections"
+    hard_limit = 25
+    soft_limit = 20
+
+  [[services.tcp_checks]]
+    interval = "15s"
+    timeout = "2s"
+    grace_period = "1s" 

@@ -13,17 +13,63 @@ A simple photo gallery solution for sharing family photos with extended family.
 
 ## Technical Approach
 
-- Local preprocessing for deduplication and organization
-- Cloud hosting via Fly.io with persistent storage
-- Photoview-based interface for easy family access
-- Automated upload process for bulk photo handling
+- ✅ Local preprocessing for deduplication and organization
+- 🔄 Cloud hosting via Fly.io with persistent storage
+- 🔄 Photoview-based interface for easy family access
+- ⏳ Automated upload process for bulk photo handling
 
-## Current Focus
+## Current Status
 
-- Setting up local development environment
-- Implementing image deduplication using perceptual hashing
-- Testing deduplication accuracy and performance
-- Basic photo viewing interface
+### Completed
+
+- ✅ Image deduplication using perceptual hashing
+- ✅ EXIF-based file organization
+- ✅ Directory structure setup
+- ✅ Metadata preservation
+
+### In Progress
+
+- 🔄 Fly.io deployment
+- 🔄 Photoview configuration
+- 🔄 Basic user access setup
+
+### Upcoming
+
+- ⏳ Bulk upload implementation
+- ⏳ Timeline view testing
+- ⏳ Final validation
+
+## Project Structure
+
+- `.cursor/` - Project context and constraints
+  - `context.md` - Overall project context and rules
+  - `constraints.json` - Technical constraints and phase boundaries
+  - `phase-context/` - Phase-specific implementation details
+- `deduplicated_photos/` - Processed photos ready for upload
+- `photos_to_process/` - Source photos
+- `duplicate_photos/` - Identified duplicates
+- Python scripts for processing
+- Configuration files for deployment
+
+## Development Workflow
+
+This project uses a context-based development workflow to maintain focus and prevent scope creep. All development should:
+
+1. Follow the current phase constraints in `.cursor/constraints.json`
+2. Reference the appropriate phase context in `.cursor/phase-context/`
+3. Maintain the project's core goals defined in `.cursor/context.md`
+4. Document all changes according to the phase requirements
+
+## Documentation
+
+The project's implementation details and constraints are maintained in the `.cursor` directory:
+
+- `.cursor/context.md` - Overall project context and rules
+- `.cursor/constraints.json` - Technical constraints and phase boundaries
+- `.cursor/phase-context/` - Phase-specific implementation details
+  - `phase1.md` - Completed local preprocessing phase
+  - `phase2.md` - Current gallery setup phase
+  - `phase3.md` - Upcoming data migration phase
 
 ## Deduplication Results
 
@@ -49,3 +95,49 @@ The initial deduplication run processed 3,390 images and identified 14 pairs of 
 ## Implementation Plan
 
 See [IMPLEMENTATION.md](IMPLEMENTATION.md) for detailed implementation steps and progress tracking.
+
+## Photoview Deployment
+
+### Prerequisites
+
+- Fly.io CLI installed (`flyctl`)
+- Fly.io account set up
+- Photos organized in the `deduplicated_photos` directory
+
+### Deployment Steps
+
+1. Login to Fly.io:
+
+   ```bash
+   flyctl auth login
+   ```
+
+2. Create volumes for persistent storage (create two volumes in different regions for redundancy):
+
+   ```bash
+   # Create primary volume in SJC (Silicon Valley)
+   flyctl volumes create photoview_data_1 --size 1 --region sjc
+
+   # Create backup volume in LAX (Los Angeles)
+   flyctl volumes create photoview_data_2 --size 1 --region lax
+   ```
+
+   Note: The volume size is set to 1GB to accommodate the current photo collection (694MB) with room for future additions. We create two volumes for redundancy to avoid downtime.
+
+3. Deploy the application:
+
+   ```bash
+   flyctl deploy
+   ```
+
+4. Configure Photoview:
+   - Access the web interface at your Fly.io URL
+   - Set up initial admin user
+   - Configure photo library path to `/data/photos`
+   - Enable timeline view and metadata display
+
+### Access and Sharing
+
+- The application will be available at `https://rogers-photo-gallery.fly.dev`
+- Share access through the Photoview interface
+- Use simple sharing links for family members
