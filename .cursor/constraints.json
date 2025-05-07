@@ -47,6 +47,16 @@
   "deployment": {
     "platform": "fly.io",
     "application": "photoview",
-    "requirements": ["persistent_storage", "basic_auth", "simple_sharing"]
+    "requirements": ["persistent_storage", "basic_auth", "simple_sharing"],
+    "storage_constraints": {
+      "volumes": {
+        "max_per_machine": 1,
+        "max_size_gb": 5,
+        "min_size_gb": 1,
+        "snapshot_retention_days": 1,
+        "hardware_dependent": true,
+        "region_bound": true
+      }
+    }
   }
 }

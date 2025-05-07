@@ -9,6 +9,19 @@
 - [ ] Metadata verification
 - [ ] Timeline view testing
 
+## Constraint Context
+
+Reference: `.cursor/constraints.json`
+
+Key Constraints:
+
+- Project Scale: 3000 photos, 1GB storage
+- Metadata: Must preserve EXIF/IPTC
+- Interface: Family-friendly, minimal complexity
+- Maintenance: Minimal, automation preferred
+- File Types: .jpg, .jpeg, .png only
+- Deployment: Fly.io with single volume (max 500GB)
+
 ## Testing Strategy
 
 1. Small Batch Testing
@@ -37,23 +50,30 @@
 
 1. Upload Process
 
-   - Bulk upload capability
-   - Progress tracking
-   - Error handling
-   - Resume capability
+   - Must comply with project scale (3000 photos)
+   - Must preserve EXIF/IPTC metadata
+   - Must use allowed file types (.jpg, .jpeg, .png)
+   - Must maintain minimal complexity
 
 2. Metadata Preservation
 
-   - Verify EXIF data
-   - Check date accuracy
-   - Validate image quality
-   - Confirm file integrity
+   - Must preserve EXIF/IPTC as required
+   - Must verify date accuracy
+   - Must validate image quality
+   - Must confirm file integrity
 
 3. Timeline View
-   - Test date-based organization
-   - Verify sorting accuracy
-   - Check display quality
-   - Validate navigation
+
+   - Must maintain family-friendly interface
+   - Must keep complexity minimal
+   - Must validate navigation
+   - Must ensure proper sorting
+
+4. Storage Constraints
+   - Must use single Fly.io volume
+   - Must respect 500GB maximum
+   - Must handle hardware/region dependencies
+   - Must use 5-day snapshot retention
 
 ## Implementation Rules
 

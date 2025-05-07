@@ -55,11 +55,12 @@ primary_region = "sjc"
   PHOTOVIEW_LISTEN_PORT = "8080"
   PHOTOVIEW_SCAN_INTERVAL = "1h"
   PHOTOVIEW_INITIAL_SCAN = "true"
+  PHOTOVIEW_MEDIA_PATH = "/data/photos"
 
-[mounts]
+[[mounts]]
   source = "photoview_data"
   destination = "/data"
-  initial_size = "1GB"
+  initial_size = "2GB"
   auto_extend_size_threshold = 80
   auto_extend_size_increment = "1GB"
   auto_extend_size_limit = "5GB"
