@@ -9,6 +9,13 @@
 - [ ] Metadata verification
 - [ ] Timeline view testing
 
+## Current State
+
+- 5 test photos prepared in test_photos/ with verified EXIF data
+- Photos span 1956-1968 with clear date metadata
+- Single volume mounted at /data with Photoview configured
+- Auto-scanning enabled (hourly)
+
 ## Constraint Context
 
 Reference: `.cursor/constraints.json`
@@ -77,6 +84,9 @@ Key Constraints:
    - Must use Photoview's auto-scanning feature
    - Must place files in /data/photos directory
    - Must maintain read-only access to media
+   - Must use flat structure in /data/photos for initial test
+   - Must maintain original filenames with dates (YYYY*MM_DD*\*)
+   - Must verify file permissions (read-only)
 
 2. Metadata Preservation
 
@@ -113,6 +123,9 @@ Key Constraints:
 - Never modify original files
 - Use cache for thumbnails
 - Maintain filesystem as source of truth
+- If auto-scan fails, verify file permissions and directory structure
+- If photos don't appear, check Photoview logs
+- If metadata issues occur, verify EXIF data before copy
 
 ## Dependencies
 
@@ -123,14 +136,22 @@ Key Constraints:
 
 ## Validation Steps
 
-- Check deduplication results
-- Verify gallery functionality
-- Test sharing features
-- Validate timeline view
-- Confirm metadata display
+- Verify photos appear in timeline view within 1 hour of copy
+- Confirm EXIF dates match timeline sorting
+- Check thumbnail generation in gallery view
+- Verify original files remain unmodified
+- Test basic navigation (next/previous, zoom)
 - Verify filesystem organization
 - Check thumbnail generation
 - Validate read-only access
+
+## Success Criteria
+
+- All 5 test photos visible in gallery within 1 hour
+- Timeline view shows correct chronological order
+- EXIF data preserved and displayed
+- Thumbnails generated correctly
+- Original files unchanged
 
 ## Next Steps
 
