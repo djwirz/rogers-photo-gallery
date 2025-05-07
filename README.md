@@ -16,7 +16,7 @@ A simple photo gallery solution for sharing family photos with extended family.
 - ✅ Local preprocessing for deduplication and organization
 - ✅ Cloud hosting via Fly.io with persistent storage
 - ✅ Photoview-based interface for easy family access
-- ⏳ Image-based deployment for photo inclusion
+- ⏳ Image-based deployment with photos included
 
 ## Current Status
 
@@ -48,7 +48,7 @@ A simple photo gallery solution for sharing family photos with extended family.
   - `context.md` - Overall project context and rules
   - `constraints.json` - Technical constraints and phase boundaries
   - `phase-context/` - Phase-specific implementation details
-- `deduplicated_photos/` - Processed photos ready for deployment
+- `deduplicated_photos/` - Processed photos for deployment
 - `photos_to_process/` - Source photos
 - `duplicate_photos/` - Identified duplicates
 - Python scripts for processing
@@ -105,12 +105,6 @@ The initial deduplication run processed 3,390 images and identified 14 pairs of 
 - ✅ Metadata display enabled
 - ✅ Auto-scanning configured (hourly)
 
-### Access Information
-
-- URL: https://rogers-photo-gallery.fly.dev
-- Admin credentials are stored securely in Fly.io configuration
-- Photos are stored in the persistent volume at `/data`
-
 ### Deployment Strategy
 
 1. Image-Based Deployment
@@ -131,6 +125,12 @@ The initial deduplication run processed 3,390 images and identified 14 pairs of 
    - No post-deployment modifications
    - Original files never modified
    - Automatic scanning only
+
+### Access Information
+
+- URL: https://rogers-photo-gallery.fly.dev
+- Admin credentials are stored securely in Fly.io configuration
+- Photos are stored in the persistent volume at `/data`
 
 ### Maintenance
 

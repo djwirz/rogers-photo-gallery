@@ -11,8 +11,8 @@
 - Metadata: Must preserve EXIF/IPTC
 - Interface: Family-friendly, minimal complexity
 - Maintenance: Minimal, automation preferred
-- Deployment: Image-based with photos included
 - File System: Must be source of truth (Photoview principle)
+- Media Access: Read-only access required
 
 ## Implementation Phases
 
@@ -23,8 +23,9 @@ Allowed Features:
 - Photoview setup
 - Basic auth
 - Simple sharing
-- Image-based deployment
 - Read-only media access
+- Volume-based persistence
+- Image-based deployment with photos included
 
 Blocked Features:
 
@@ -34,6 +35,7 @@ Blocked Features:
 - Proprietary formats
 - Runtime file uploads
 - Post-deployment file modifications
+- SFTP or runtime file transfers
 
 ## Deployment Constraints
 
@@ -44,15 +46,17 @@ Requirements:
 - Persistent storage
 - Basic auth
 - Simple sharing
-- Image-based deployment
 - Read-only media access
+- Volume-based persistence
+- Image-based deployment
 
 Storage Constraints:
 
+- Initial size: 2GB
+- Auto-extend threshold: 80%
+- Auto-extend increment: 1GB
+- Auto-extend limit: 5GB
 - Max 1 volume per machine
-- Max size: 500GB
-- Min size: 1GB
-- Snapshot retention: 5 days
 - Hardware dependent
 - Region bound
 
@@ -60,9 +64,10 @@ Storage Constraints:
 
 Required Directories:
 
-- deduplicated_photos (for deployment)
+- deduplicated_photos (for volume)
 - photos_to_process
 - duplicate_photos
+- test_photos (for initial deployment)
 
 ## Photoview Principles
 
@@ -70,18 +75,45 @@ Required Directories:
 
    - Directory structure defines organization
    - No runtime modifications
-   - Files included in deployment
+   - Read-only media access
+   - Volume-based persistence
+   - Image-based deployment
 
 2. Original Files Never Modified
 
    - Read-only media access
    - Thumbnails in separate cache
    - No file modifications
+   - No runtime uploads
+   - Files included in deployment image
 
 3. Automatic Scanning
    - Hourly directory scanning
    - Automatic thumbnail generation
    - No manual intervention
+   - Volume-based persistence
+   - Initial scan on deployment
+
+## Image-Based Deployment Rules
+
+1. Dockerfile Requirements
+
+   - Base image: Official Photoview image
+   - Copy photos during build
+   - Set correct permissions
+   - Maintain volume mounts
+
+2. Volume Usage
+
+   - /data/photos: Read-only mount for media
+   - /data/cache: Writable for thumbnails
+   - /data/photoview.db: Database storage
+
+3. Security Constraints
+   - No runtime file modifications
+   - Read-only media access
+   - Secure volume mounts
+   - Proper permission inheritance
 
 ## Usage
 
