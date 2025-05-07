@@ -22,18 +22,25 @@
     }
   },
   "implementation_phases": {
-    "current_phase": 2,
+    "current_phase": 3,
     "allowed_features": [
       "flyio_deployment",
       "photoview_setup",
       "basic_auth",
-      "simple_sharing"
+      "simple_sharing",
+      "auto_scanning",
+      "timeline_view",
+      "exif_display"
     ],
     "blocked_features": [
       "complex_auth",
       "custom_ui",
       "advanced_features",
-      "proprietary_formats"
+      "proprietary_formats",
+      "video_support",
+      "face_recognition",
+      "map_view",
+      "raw_support"
     ]
   },
   "file_structure": {
@@ -47,7 +54,12 @@
   "deployment": {
     "platform": "fly.io",
     "application": "photoview",
-    "requirements": ["persistent_storage", "basic_auth", "simple_sharing"],
+    "requirements": [
+      "persistent_storage",
+      "basic_auth",
+      "simple_sharing",
+      "read_only_media"
+    ],
     "storage_constraints": {
       "volumes": {
         "max_per_machine": 1,
@@ -57,6 +69,23 @@
         "hardware_dependent": true,
         "region_bound": true
       }
+    },
+    "photoview_config": {
+      "media_path": "/data/photos",
+      "database_path": "/data/photoview.db",
+      "cache_path": "/data/cache",
+      "scan_interval": "1h",
+      "initial_scan": true,
+      "auto_scanning": true,
+      "read_only": true,
+      "file_system_source_of_truth": true
+    },
+    "photoview_principles": {
+      "file_system_source_of_truth": true,
+      "original_files_untouched": true,
+      "read_only_media": true,
+      "cache_based_thumbnails": true,
+      "directory_based_albums": true
     }
   }
 }

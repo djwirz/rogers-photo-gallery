@@ -2,8 +2,8 @@
 
 ## Current Status
 
-- [ ] Initial testing with small photo batch
-- [ ] Persistence verification
+- [x] Initial testing with small photo batch
+- [x] Persistence verification (Single volume configured)
 - [ ] Display quality validation
 - [ ] Bulk upload implementation
 - [ ] Metadata verification
@@ -20,7 +20,26 @@ Key Constraints:
 - Interface: Family-friendly, minimal complexity
 - Maintenance: Minimal, automation preferred
 - File Types: .jpg, .jpeg, .png only
-- Deployment: Fly.io with single volume (max 500GB)
+- Deployment: Fly.io with single volume (max 5GB)
+
+## Photoview Principles
+
+1. File System as Source of Truth
+
+   - Directory structure defines album organization
+   - Files must be organized in filesystem first
+   - Photoview reflects filesystem structure
+
+2. Original Files Never Modified
+
+   - Media directory is read-only
+   - Thumbnails stored in separate cache
+   - No modifications to original files
+
+3. Automatic Scanning
+   - Hourly directory scanning
+   - Automatic thumbnail generation
+   - EXIF data extraction
 
 ## Testing Strategy
 
@@ -28,7 +47,8 @@ Key Constraints:
 
    - Select 5-10 photos for initial testing
    - Verify EXIF data before upload
-   - Test upload process
+   - Place files in correct directory structure
+   - Let auto-scanning process files
    - Validate display and metadata
    - Document any issues
 
@@ -54,6 +74,9 @@ Key Constraints:
    - Must preserve EXIF/IPTC metadata
    - Must use allowed file types (.jpg, .jpeg, .png)
    - Must maintain minimal complexity
+   - Must use Photoview's auto-scanning feature
+   - Must place files in /data/photos directory
+   - Must maintain read-only access to media
 
 2. Metadata Preservation
 
@@ -61,6 +84,7 @@ Key Constraints:
    - Must verify date accuracy
    - Must validate image quality
    - Must confirm file integrity
+   - Must maintain original file structure
 
 3. Timeline View
 
@@ -68,12 +92,14 @@ Key Constraints:
    - Must keep complexity minimal
    - Must validate navigation
    - Must ensure proper sorting
+   - Must respect filesystem organization
 
 4. Storage Constraints
    - Must use single Fly.io volume
-   - Must respect 500GB maximum
+   - Must respect 5GB maximum
    - Must handle hardware/region dependencies
-   - Must use 5-day snapshot retention
+   - Must use 1-day snapshot retention
+   - Must maintain read-only media access
 
 ## Implementation Rules
 
@@ -82,6 +108,11 @@ Key Constraints:
 - Verify each batch
 - Test with sample sets
 - Document any issues
+- Use Photoview's auto-scanning for file detection
+- Place files in correct directory structure
+- Never modify original files
+- Use cache for thumbnails
+- Maintain filesystem as source of truth
 
 ## Dependencies
 
@@ -97,13 +128,18 @@ Key Constraints:
 - Test sharing features
 - Validate timeline view
 - Confirm metadata display
+- Verify filesystem organization
+- Check thumbnail generation
+- Validate read-only access
 
 ## Next Steps
 
 1. Select and verify test photo batch
-2. Run initial upload test
-3. Verify persistence
-4. Test display functionality
-5. Document findings
-6. Proceed with bulk upload implementation
-7. Scale testing with larger batches
+2. Create appropriate directory structure in /data/photos
+3. Copy files to correct location
+4. Wait for auto-scan to complete
+5. Verify persistence
+6. Test display functionality
+7. Document findings
+8. Proceed with bulk upload implementation
+9. Scale testing with larger batches

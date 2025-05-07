@@ -14,8 +14,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 def copy_test_photos():
-    """Copy test photos to the local test directory."""
-    source_dir = Path('test_photos')
+    """Copy test photos to the local test directory and ensure proper permissions."""
+    source_dir = Path('photos_to_process')
     target_dir = Path('local_test/photos')
     
     # Create target directory if it doesn't exist
@@ -26,18 +26,42 @@ def copy_test_photos():
         target_path = target_dir / photo.name
         logger.info(f"Copying {photo.name} to {target_path}")
         shutil.copy2(photo, target_path)
+        # Ensure proper permissions
+        os.chmod(target_path, 0o644)
     
     logger.info("All test photos copied successfully")
 
+def verify_photos():
+    """Verify that photos exist in the target directory."""
+    target_dir = Path('local_test/photos')
+    if not target_dir.exists():
+        logger.error(f"Target directory {target_dir} does not exist")
+        return False
+    
+    photos = list(target_dir.glob('*.jpg'))
+    if not photos:
+        logger.error("No photos found in target directory")
+        return False
+    
+    logger.info(f"Found {len(photos)} photos in target directory")
+    for photo in photos:
+        logger.info(f"Verified: {photo.name} ({photo.stat().st_size} bytes)")
+    return True
+
 def main():
     try:
-        # Check if we have test photos
-        if not Path('test_photos').exists():
-            logger.error("test_photos directory not found")
+        # Check if we have photos to process
+        if not Path('photos_to_process').exists():
+            logger.error("photos_to_process directory not found")
             return
         
         # Copy photos to local test directory
         copy_test_photos()
+        
+        # Verify the photos were copied correctly
+        if not verify_photos():
+            logger.error("Photo verification failed")
+            return
         
         logger.info("Test photos have been copied to local_test/photos")
         logger.info("Next steps:")
