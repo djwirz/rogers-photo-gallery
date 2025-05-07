@@ -2,9 +2,9 @@
 
 ## Current Status
 
-- [ ] Fly.io deployment
-- [ ] Photoview configuration
-- [ ] User access setup
+- [x] Fly.io deployment
+- [x] Photoview configuration
+- [x] User access setup
 
 ## Technical Constraints
 

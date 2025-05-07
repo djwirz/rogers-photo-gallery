@@ -9,6 +9,8 @@ primary_region = "sjc"
   PHOTOVIEW_DATABASE_PATH = "/data/photoview.db"
   PHOTOVIEW_MEDIA_CACHE = "/data/cache"
   PHOTOVIEW_SERVE_UI = "true"
+  PHOTOVIEW_ADMIN_USERNAME = "admin"
+  PHOTOVIEW_ADMIN_PASSWORD = "changeme123"
   PHOTOVIEW_DISABLE_ALBUMS = "false"
   PHOTOVIEW_DISABLE_SHARING = "false"
   PHOTOVIEW_DISABLE_VIDEOS = "true"
@@ -51,11 +53,16 @@ primary_region = "sjc"
   PORT = "8080"
   PHOTOVIEW_LISTEN_IP = "0.0.0.0"
   PHOTOVIEW_LISTEN_PORT = "8080"
+  PHOTOVIEW_SCAN_INTERVAL = "1h"
+  PHOTOVIEW_INITIAL_SCAN = "true"
 
 [mounts]
   source = "photoview_data"
   destination = "/data"
   initial_size = "1GB"
+  auto_extend_size_threshold = 80
+  auto_extend_size_increment = "1GB"
+  auto_extend_size_limit = "5GB"
 
 [[services]]
   protocol = "tcp"

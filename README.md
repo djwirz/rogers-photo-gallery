@@ -14,8 +14,8 @@ A simple photo gallery solution for sharing family photos with extended family.
 ## Technical Approach
 
 - ✅ Local preprocessing for deduplication and organization
-- 🔄 Cloud hosting via Fly.io with persistent storage
-- 🔄 Photoview-based interface for easy family access
+- ✅ Cloud hosting via Fly.io with persistent storage
+- ✅ Photoview-based interface for easy family access
 - ⏳ Automated upload process for bulk photo handling
 
 ## Current Status
@@ -26,18 +26,21 @@ A simple photo gallery solution for sharing family photos with extended family.
 - ✅ EXIF-based file organization
 - ✅ Directory structure setup
 - ✅ Metadata preservation
+- ✅ Fly.io deployment with persistent storage
+- ✅ Photoview configuration and basic setup
+- ✅ User authentication and access control
 
 ### In Progress
 
-- 🔄 Fly.io deployment
-- 🔄 Photoview configuration
-- 🔄 Basic user access setup
+- 🔄 Bulk upload implementation
+- 🔄 Timeline view testing
+- 🔄 Sharing configuration testing
 
 ### Upcoming
 
-- ⏳ Bulk upload implementation
-- ⏳ Timeline view testing
-- ⏳ Final validation
+- ⏳ Family member onboarding
+- ⏳ Usage monitoring and optimization
+- ⏳ Backup strategy implementation
 
 ## Project Structure
 
@@ -68,7 +71,7 @@ The project's implementation details and constraints are maintained in the `.cur
 - `.cursor/constraints.json` - Technical constraints and phase boundaries
 - `.cursor/phase-context/` - Phase-specific implementation details
   - `phase1.md` - Completed local preprocessing phase
-  - `phase2.md` - Current gallery setup phase
+  - `phase2.md` - Completed gallery setup phase
   - `phase3.md` - Upcoming data migration phase
 
 ## Deduplication Results
@@ -92,48 +95,36 @@ The initial deduplication run processed 3,390 images and identified 14 pairs of 
 13. `Picture_224(rev 1).jpg` ↔ `Leonne_and_Chuck_224(rev 0).jpg`
 14. `Picture_001(rev 0).jpg` ↔ `Leonne_and_Chuck_001(rev 0).jpg`
 
+## Photoview Deployment
+
+### Current Setup
+
+- ✅ Deployed on Fly.io with persistent storage
+- ✅ Basic authentication enabled
+- ✅ Timeline view configured
+- ✅ Metadata display enabled
+- ✅ Auto-scanning configured (hourly)
+
+### Access Information
+
+- URL: https://rogers-photo-gallery.fly.dev
+- Admin credentials are stored securely in Fly.io configuration
+- Photos are stored in the persistent volume at `/data`
+
+### Maintenance
+
+- The application automatically scans for new photos hourly
+- Storage automatically extends up to 5GB as needed
+- Health checks ensure service availability
+- Regular backups are maintained through the local photo collection
+
+### Next Steps
+
+1. Implement bulk upload process
+2. Test sharing functionality with family members
+3. Monitor usage and optimize performance
+4. Document family member onboarding process
+
 ## Implementation Plan
 
 See [IMPLEMENTATION.md](IMPLEMENTATION.md) for detailed implementation steps and progress tracking.
-
-## Photoview Deployment
-
-### Prerequisites
-
-- Fly.io CLI installed (`flyctl`)
-- Fly.io account set up
-- Photos organized in the `deduplicated_photos` directory
-
-### Deployment Steps
-
-1. Login to Fly.io:
-
-   ```bash
-   flyctl auth login
-   ```
-
-2. Create the volume for persistent storage:
-
-   ```bash
-   flyctl volumes create photoview_data --size 1 --region sjc
-   ```
-
-   Note: The volume size is set to 1GB to accommodate the current photo collection (694MB) with room for future additions. Your local photos serve as the backup, so no additional backup volumes are needed.
-
-3. Deploy the application:
-
-   ```bash
-   flyctl deploy
-   ```
-
-4. Configure Photoview:
-   - Access the web interface at your Fly.io URL
-   - Set up initial admin user
-   - Configure photo library path to `/data/photos`
-   - Enable timeline view and metadata display
-
-### Access and Sharing
-
-- The application will be available at `https://rogers-photo-gallery.fly.dev`
-- Share access through the Photoview interface
-- Use simple sharing links for family members
