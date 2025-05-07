@@ -11,16 +11,20 @@
 - Metadata: Must preserve EXIF/IPTC
 - Interface: Family-friendly, minimal complexity
 - Maintenance: Minimal, automation preferred
+- Deployment: Image-based with photos included
+- File System: Must be source of truth (Photoview principle)
 
 ## Implementation Phases
 
-Current Phase: 2
+Current Phase: 3
 Allowed Features:
 
 - Fly.io deployment
 - Photoview setup
 - Basic auth
 - Simple sharing
+- Image-based deployment
+- Read-only media access
 
 Blocked Features:
 
@@ -28,6 +32,8 @@ Blocked Features:
 - Custom UI
 - Advanced features
 - Proprietary formats
+- Runtime file uploads
+- Post-deployment file modifications
 
 ## Deployment Constraints
 
@@ -38,6 +44,8 @@ Requirements:
 - Persistent storage
 - Basic auth
 - Simple sharing
+- Image-based deployment
+- Read-only media access
 
 Storage Constraints:
 
@@ -52,9 +60,28 @@ Storage Constraints:
 
 Required Directories:
 
-- deduplicated_photos
+- deduplicated_photos (for deployment)
 - photos_to_process
 - duplicate_photos
+
+## Photoview Principles
+
+1. File System as Source of Truth
+
+   - Directory structure defines organization
+   - No runtime modifications
+   - Files included in deployment
+
+2. Original Files Never Modified
+
+   - Read-only media access
+   - Thumbnails in separate cache
+   - No file modifications
+
+3. Automatic Scanning
+   - Hourly directory scanning
+   - Automatic thumbnail generation
+   - No manual intervention
 
 ## Usage
 

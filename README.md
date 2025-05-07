@@ -16,7 +16,7 @@ A simple photo gallery solution for sharing family photos with extended family.
 - ✅ Local preprocessing for deduplication and organization
 - ✅ Cloud hosting via Fly.io with persistent storage
 - ✅ Photoview-based interface for easy family access
-- ⏳ Automated upload process for bulk photo handling
+- ⏳ Image-based deployment for photo inclusion
 
 ## Current Status
 
@@ -32,7 +32,7 @@ A simple photo gallery solution for sharing family photos with extended family.
 
 ### In Progress
 
-- 🔄 Bulk upload implementation
+- 🔄 Deployment image preparation
 - 🔄 Timeline view testing
 - 🔄 Sharing configuration testing
 
@@ -48,7 +48,7 @@ A simple photo gallery solution for sharing family photos with extended family.
   - `context.md` - Overall project context and rules
   - `constraints.json` - Technical constraints and phase boundaries
   - `phase-context/` - Phase-specific implementation details
-- `deduplicated_photos/` - Processed photos ready for upload
+- `deduplicated_photos/` - Processed photos ready for deployment
 - `photos_to_process/` - Source photos
 - `duplicate_photos/` - Identified duplicates
 - Python scripts for processing
@@ -72,7 +72,7 @@ The project's implementation details and constraints are maintained in the `.cur
 - `.cursor/phase-context/` - Phase-specific implementation details
   - `phase1.md` - Completed local preprocessing phase
   - `phase2.md` - Completed gallery setup phase
-  - `phase3.md` - Upcoming data migration phase
+  - `phase3.md` - Current data migration phase
 
 ## Deduplication Results
 
@@ -111,6 +111,27 @@ The initial deduplication run processed 3,390 images and identified 14 pairs of 
 - Admin credentials are stored securely in Fly.io configuration
 - Photos are stored in the persistent volume at `/data`
 
+### Deployment Strategy
+
+1. Image-Based Deployment
+
+   - Photos included in deployment image
+   - No runtime file uploads
+   - Read-only access to media
+   - Automatic scanning on startup
+
+2. Volume Usage
+
+   - /data/photos: Read-only mount for media
+   - /data/cache: Writable for thumbnails
+   - /data/photoview.db: Database storage
+
+3. File System Principles
+   - Filesystem as source of truth
+   - No post-deployment modifications
+   - Original files never modified
+   - Automatic scanning only
+
 ### Maintenance
 
 - The application automatically scans for new photos hourly
@@ -120,7 +141,7 @@ The initial deduplication run processed 3,390 images and identified 14 pairs of 
 
 ### Next Steps
 
-1. Implement bulk upload process
+1. Create deployment image with photos
 2. Test sharing functionality with family members
 3. Monitor usage and optimize performance
 4. Document family member onboarding process

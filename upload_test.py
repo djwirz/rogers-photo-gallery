@@ -5,6 +5,8 @@ import shutil
 import logging
 from pathlib import Path
 import time
+from PIL import Image
+from PIL.ExifTags import TAGS
 
 # Configure logging
 logging.basicConfig(
@@ -13,9 +15,35 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+def cleanup_target_directory():
+    """Remove all existing photos from the target directory."""
+    target_dir = Path('local_test/photos')
+    if target_dir.exists():
+        logger.info(f"Cleaning up {target_dir}")
+        for photo in target_dir.glob('*.jpg'):
+            photo.unlink()
+            logger.info(f"Removed {photo.name}")
+    else:
+        target_dir.mkdir(parents=True, exist_ok=True)
+        logger.info(f"Created target directory {target_dir}")
+
+def get_exif_date(image_path):
+    """Extract date from EXIF data."""
+    try:
+        with Image.open(image_path) as img:
+            exif = img._getexif()
+            if exif:
+                for tag_id in exif:
+                    tag = TAGS.get(tag_id, tag_id)
+                    if tag == 'DateTimeOriginal':
+                        return exif[tag_id]
+    except Exception as e:
+        logger.warning(f"Could not read EXIF data for {image_path}: {e}")
+    return None
+
 def copy_test_photos():
     """Copy test photos to the local test directory and ensure proper permissions."""
-    source_dir = Path('photos_to_process')
+    source_dir = Path('test_photos')
     target_dir = Path('local_test/photos')
     
     # Create target directory if it doesn't exist
@@ -28,11 +56,18 @@ def copy_test_photos():
         shutil.copy2(photo, target_path)
         # Ensure proper permissions
         os.chmod(target_path, 0o644)
+        
+        # Verify EXIF data
+        exif_date = get_exif_date(photo)
+        if exif_date:
+            logger.info(f"EXIF date for {photo.name}: {exif_date}")
+        else:
+            logger.warning(f"No EXIF date found for {photo.name}")
     
     logger.info("All test photos copied successfully")
 
 def verify_photos():
-    """Verify that photos exist in the target directory."""
+    """Verify that photos exist in the target directory and have EXIF data."""
     target_dir = Path('local_test/photos')
     if not target_dir.exists():
         logger.error(f"Target directory {target_dir} does not exist")
@@ -45,15 +80,23 @@ def verify_photos():
     
     logger.info(f"Found {len(photos)} photos in target directory")
     for photo in photos:
+        exif_date = get_exif_date(photo)
         logger.info(f"Verified: {photo.name} ({photo.stat().st_size} bytes)")
+        if exif_date:
+            logger.info(f"  EXIF date: {exif_date}")
+        else:
+            logger.warning(f"  No EXIF date found")
     return True
 
 def main():
     try:
         # Check if we have photos to process
-        if not Path('photos_to_process').exists():
-            logger.error("photos_to_process directory not found")
+        if not Path('test_photos').exists():
+            logger.error("test_photos directory not found")
             return
+        
+        # Clean up target directory
+        cleanup_target_directory()
         
         # Copy photos to local test directory
         copy_test_photos()
