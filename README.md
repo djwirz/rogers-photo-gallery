@@ -77,6 +77,17 @@ This project uses a context-based development workflow to maintain focus and pre
 
 ## Deployment Process
 
+**Fly.io Single-Volume Constraint:**
+
+- Fly.io only allows one persistent volume per machine.
+- Both the photo library and the Photoview database must reside on the same volume.
+- The correct structure is:
+  - `/data/photos` (all media files)
+  - `/data/photoview.db` (database file)
+- Only a single volume (e.g., `photoview_db`) should be mounted at `/data`.
+- Do NOT attempt to mount a second volume for `/photos` or any other path.
+- All configuration, scripts, and documentation reflect this constraint.
+
 1. Verify local testing
 2. Deploy in small batches
 3. Test each deployment
@@ -164,3 +175,28 @@ The initial deduplication run processed 3,390 images and identified 14 pairs of 
 ## Implementation Plan
 
 See [IMPLEMENTATION.md](IMPLEMENTATION.md) for detailed implementation steps and progress tracking.
+
+## Important Note: Dev vs Production Storage
+
+- The local dev environment mounts ./Photos to /photos, which is NOT available in production.
+- In production (Fly.io), you must manually upload or create /data/photos on the persistent volume.
+- The main production challenge is getting images into /data/photos, not gallery UI or database setup.
+- Use dev only for UI/database validation, not for storage or upload workflows.
+
+### How to Upload Images to /data/photos on Fly.io
+
+1. SSH into your Fly.io machine:
+   ```sh
+   flyctl ssh console -a rogers-photo-gallery
+   mkdir -p /data/photos
+   exit
+   ```
+2. Use SFTP to upload images:
+   ```sh
+   flyctl ssh sftp shell -a rogers-photo-gallery
+   put -r /path/to/local/photos /data/photos
+   exit
+   ```
+   (You can also use `scp` or other tools if you prefer.)
+3. Once images are uploaded, add `/data/photos` as the library path in the Photoview UI.
+4. Photoview will scan and index your images from `/data/photos`.

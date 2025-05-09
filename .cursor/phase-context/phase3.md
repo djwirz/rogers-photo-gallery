@@ -56,15 +56,11 @@ Focus is on photo verification ONLY.
 
 ### Phase 3B: Deployment Strategy (Next)
 
-- [ ] 1. Volume Configuration
+- [ ] 1. Volume Configuration (Fly.io Single-Volume Constraint)
 
-  - [ ] Set up 2GB initial volume
-  - [ ] Configure auto-extend
-  - [ ] Test persistence
-  - [ ] Document settings
-  - [ ] Verify database volume
-  - [ ] Test database migration
-  - [ ] Validate database recovery
+  - [x] Set up 2GB initial volume at `/data` (contains both photos and database)
+  - [x] Configure Photoview to use `/data/photos` for media and `/data/photoview.db` for the database
+  - [x] Remove any references to multiple volumes in deployment scripts and documentation
 
 - [ ] 2. Deployment Process
 
@@ -85,26 +81,32 @@ Focus is on photo verification ONLY.
   - [ ] Test database backups
   - [ ] Verify database recovery
 
-### Phase 3C: Migration Process (Final)
+## Production Image Upload (Critical Difference from Dev)
 
-- [ ] 1. Photo Organization
+- The local dev environment mounts ./Photos to /photos, which is NOT available in production.
+- In production (Fly.io), you must manually upload or create /data/photos on the persistent volume.
+- The main challenge in production is getting images into /data/photos, not gallery UI or database setup.
+- The dev environment should only be used to validate UI and database logic, NOT storage or upload workflows.
 
-  - [ ] Verify deduplication
-  - [ ] Check EXIF data
-  - [ ] Organize by date
-  - [ ] Document structure
-  - [ ] Validate database organization
-  - [ ] Test database queries
-  - [ ] Confirm database performance
+### How to Upload Images to /data/photos on Fly.io
 
-- [ ] 2. Full Migration
-  - [ ] Deploy in batches
-  - [ ] Verify each batch
-  - [ ] Test all features
-  - [ ] Document results
-  - [ ] Monitor database growth
-  - [ ] Test database optimization
-  - [ ] Validate database integrity
+1. SSH into your Fly.io machine:
+   ```sh
+   flyctl ssh console -a rogers-photo-gallery
+   mkdir -p /data/photos
+   exit
+   ```
+2. Use SFTP to upload images:
+   ```sh
+   flyctl ssh sftp shell -a rogers-photo-gallery
+   put -r /path/to/local/photos /data/photos
+   exit
+   ```
+   (You can also use `scp` or other tools if you prefer.)
+3. Once images are uploaded, add `/data/photos` as the library path in the Photoview UI.
+4. Photoview will scan and index your images from `/data/photos`.
+
+**Note:** The dev environment's `/photos` path is not available in production. Always use `/data/photos` in production.
 
 ## Design Decisions
 
@@ -202,6 +204,40 @@ Focus is on photo verification ONLY.
    PHOTOVIEW_INITIAL_SCAN=true
    ```
    - Verification: Check media table for photo entries after container restart
+
+### Cache Directory Issues
+
+1. Permission Denied Errors
+
+   - Symptom: "could not make album image cache directory: mkdir /app/cache/X: permission denied"
+   - Cause: Cache volume permissions not properly configured
+   - Solution: Use standard Docker volume without custom permissions
+
+   ```yaml
+   volumes:
+     - photoview_cache:/app/cache
+   ```
+
+   - Verification: Photoview can create cache directories and store thumbnails
+
+2. Cache Directory Configuration
+
+   - Path must remain as `/app/cache` per version lock
+   - Use standard Docker volume management
+   - No custom permissions needed
+   - Let Photoview handle cache directory creation
+
+3. Cache Reset Procedure (IMPORTANT)
+   - If cache permission errors occur:
+     1. Stop all containers: `docker-compose down`
+     2. Remove the cache volume: `docker volume rm rogers-photo-gallery_photoview_cache`
+     3. Restart containers: `docker-compose up -d`
+   - DO NOT attempt to fix with:
+     - User mapping
+     - Permission modifications
+     - Custom ownership changes
+   - The cache is disposable and should be recreated if issues occur
+   - This is the ONLY approved method for handling cache issues
 
 ## Photoview Core Principles
 

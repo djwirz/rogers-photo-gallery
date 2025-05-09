@@ -14,6 +14,9 @@ This is a family photo gallery project with specific implementation phases and c
 - Automated deduplication
 - Local development first approach
 - MUST use photoview/photoview:latest (DO NOT change version)
+- Only one persistent volume may be mounted per Fly.io machine (see Fly.io docs and project constraints)
+- Both the photo library and the Photoview database must reside on the same volume
+- Use `/data/photos` for all media files and `/data/photoview.db` for the database
 
 ## Implementation Rules
 
@@ -26,6 +29,10 @@ This is a family photo gallery project with specific implementation phases and c
   - Database: MariaDB 10.5
 - Never modify these paths
 - Never change versions
+- Never solve cache permission issues with user mapping or complex permissions. If cache errors occur, delete and recreate the cache volume; cache is disposable.
+- All deployment, configuration, and documentation must reflect the single-volume constraint
+- Do NOT attempt to mount a second volume for `/photos` or any other path
+- All scripts and configuration files must use `/data/photos` and `/data/photoview.db`
 
 ## Implementation Phases
 
@@ -98,3 +105,10 @@ This is a family photo gallery project with specific implementation phases and c
 - Maintain read-only media access
 - Let Photoview handle scanning automatically
 - Keep configuration simple and minimal
+
+## Important Note on Dev vs Production Storage
+
+- The local dev environment mounts ./Photos to /photos, which is NOT available in production.
+- In production (Fly.io), you must manually upload or create /data/photos on the persistent volume.
+- The main production challenge is getting images into /data/photos, not gallery UI or database setup.
+- Use dev only for UI/database validation, not for storage or upload workflows.

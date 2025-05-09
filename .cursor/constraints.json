@@ -31,6 +31,9 @@
       "level": "minimal",
       "automation": "preferred"
     },
+    "cache_handling": {
+      "note": "Cache permission issues must not be solved via user mapping or complex permissions. If cache errors occur, delete and recreate the cache volume. Cache is disposable and should never be the source of complex troubleshooting."
+    },
     "database": {
       "verification_required": true,
       "schema_validation": true,
@@ -141,12 +144,13 @@
         "min_size_gb": 1,
         "snapshot_retention_days": 1,
         "hardware_dependent": true,
-        "region_bound": true
+        "region_bound": true,
+        "note": "Only one volume may be mounted per Fly.io machine. Both photos and the database must reside under /data."
       }
     },
     "photoview_config": {
       "version": "latest",
-      "media_path": "/photos",
+      "media_path": "/data/photos",
       "database_path": "/data/photoview.db",
       "cache_path": "/app/cache",
       "initial_scan": true,
@@ -155,7 +159,9 @@
       "local_development": true,
       "database_verification": true,
       "schema_validation": true,
-      "data_integrity": true
+      "data_integrity": true,
+      "cache_handling": "If cache permission errors occur, delete and recreate the cache volume. Do not attempt to fix with user mapping or permission hacks.",
+      "note": "Both photos and the database must be stored on the same volume mounted at /data. Do not attempt to use multiple volumes."
     },
     "photoview_principles": {
       "file_system_source_of_truth": true,

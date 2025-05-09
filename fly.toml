@@ -7,9 +7,16 @@ primary_region = "sjc"
 [env]
   PHOTOVIEW_ADMIN_USERNAME = "admin"
   PHOTOVIEW_ADMIN_PASSWORD = "changeme123"
+  PHOTOVIEW_LISTEN_IP = "0.0.0.0"
+  PHOTOVIEW_LISTEN_PORT = "8080"
+  PHOTOVIEW_MEDIA_CACHE = "/app/cache"
+  PHOTOVIEW_MEDIA_PATH = "/data/photos"
+  PHOTOVIEW_DATABASE_DRIVER = "sqlite"
+  PHOTOVIEW_SQLITE_PATH = "/data/photoview.db"
+  PHOTOVIEW_INITIAL_SCAN = "true"
 
 [[mounts]]
-  source = "photoview_db"
+  source = "photoview_data"
   destination = "/data"
 
 [processes]

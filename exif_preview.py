@@ -9,6 +9,9 @@ import logging
 from collections import defaultdict
 import re
 import argparse
+import piexif
+from time import mktime
+import json
 
 # Set up logging
 logging.basicConfig(
@@ -121,7 +124,18 @@ def extract_date(exif_data: dict, file_path: str) -> tuple:
     """Extract date information from EXIF data or file metadata."""
     filename = os.path.basename(file_path)
     
-    # First try EXIF dates
+    # First check User Comment for year information
+    if 'User Comment' in exif_data:
+        try:
+            comment_data = json.loads(exif_data['User Comment'])
+            if 'year' in comment_data and comment_data['year']:
+                year = str(comment_data['year'])
+                # Use January 1st as default date if only year is known
+                return f"{year}0101_000000", 'USER_COMMENT_YEAR'
+        except (json.JSONDecodeError, ValueError):
+            pass
+    
+    # Try EXIF dates, but skip scan dates (2009)
     date_fields = ['DateTimeOriginal', 'DateTime', 'DateTimeDigitized']
     for field in date_fields:
         if field in exif_data:
@@ -149,8 +163,9 @@ def extract_date(exif_data: dict, file_path: str) -> tuple:
     except Exception as e:
         logger.error(f"Error getting file modification time for {file_path}: {e}")
     
-    # Default fallback - use a reasonable historical date
-    return '19000101_000000', 'DEFAULT_UNKNOWN'
+    # If no valid date found, use 1900 instead of None
+    # This prevents Photoview from using 2025 as a fallback
+    return '19000101_000000', 'DEFAULT_HISTORICAL'
 
 def analyze_exif_data(image_files: list) -> dict:
     """Analyze what EXIF data is available across all images."""
@@ -209,6 +224,10 @@ def generate_filename(exif_data: dict, original_name: str) -> tuple:
     ext = os.path.splitext(original_name)[1].lower()
     
     # Generate new filename
+    if date_str is None:
+        # If no date found, use original filename with prefix
+        return f"{prefix}{os.path.splitext(original_name)[0]}{ext}", date_source
+    
     return f"{prefix}{date_str}{ext}", date_source
 
 def organize_and_rename_photos():
@@ -273,14 +292,55 @@ def organize_and_rename_photos():
     print(f"\nMoved and renamed {moved_count} photos into organized folders under {dest_dir}/")
     print(f"{remaining} photos remain in {src_dir}/ (should be 0 if all moved)")
 
+def fix_dates_in_photos():
+    src_dir = Path('Photos')
+    image_files = list(src_dir.rglob('*'))
+    image_files = [f for f in image_files if f.is_file() and f.suffix.lower() in ['.jpg', '.jpeg']]
+    fixed_count = 0
+    for image_path in image_files:
+        exif_data = get_exif_data(image_path)
+        intended_date_str, _ = extract_date(exif_data, str(image_path))
+        # Format: YYYYMMDD_HHMMSS
+        try:
+            dt = datetime.strptime(intended_date_str, '%Y%m%d_%H%M%S')
+        except Exception:
+            logger.warning(f"Could not parse intended date for {image_path.name}, skipping.")
+            continue
+        # Set mtime
+        ts = mktime(dt.timetuple())
+        try:
+            os.utime(image_path, (ts, ts))
+        except Exception as e:
+            logger.error(f"Failed to set mtime for {image_path.name}: {e}")
+        # Set EXIF DateTimeOriginal if missing or wrong
+        try:
+            exif_dict = piexif.load(str(image_path))
+            exif_dt = exif_dict['Exif'].get(piexif.ExifIFD.DateTimeOriginal)
+            exif_dt_str = dt.strftime('%Y:%m:%d %H:%M:%S')
+            needs_update = (
+                not exif_dt or
+                (isinstance(exif_dt, bytes) and exif_dt.decode(errors='ignore') != exif_dt_str)
+            )
+            if needs_update:
+                exif_dict['Exif'][piexif.ExifIFD.DateTimeOriginal] = exif_dt_str.encode()
+                exif_dict['Exif'][piexif.ExifIFD.DateTimeDigitized] = exif_dt_str.encode()
+                exif_dict['0th'][piexif.ImageIFD.DateTime] = exif_dt_str.encode()
+                exif_bytes = piexif.dump(exif_dict)
+                piexif.insert(exif_bytes, str(image_path))
+                logger.info(f"Updated EXIF date for {image_path.name} -> {exif_dt_str}")
+                fixed_count += 1
+        except Exception as e:
+            logger.error(f"Failed to update EXIF for {image_path.name}: {e}")
+    print(f"\nFixed dates for {fixed_count} images in {src_dir}/ (EXIF and mtime)")
+
 def main():
-    input_dir = Path('deduplicated_photos')
+    input_dir = Path('Photos')
     if not input_dir.exists():
         logger.error(f"Directory {input_dir} does not exist!")
         return
 
-    # Get all image files
-    image_files = [f for f in input_dir.glob('*') 
+    # Get all image files recursively
+    image_files = [f for f in input_dir.rglob('*') 
                   if f.is_file() 
                   and f.suffix.lower() in ['.jpg', '.jpeg', '.png']]
     
@@ -332,8 +392,11 @@ def main():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='EXIF preview and photo organizer')
     parser.add_argument('--organize', action='store_true', help='Organize and rename photos into Photos/<Group>/<Decade>/')
+    parser.add_argument('--fix-dates', action='store_true', help='Fix EXIF and mtime dates for all images in Photos/')
     args = parser.parse_args()
     if args.organize:
         organize_and_rename_photos()
+    elif args.fix_dates:
+        fix_dates_in_photos()
     else:
         main() 
