@@ -8,6 +8,7 @@ from datetime import datetime
 import logging
 from collections import defaultdict
 import re
+import argparse
 
 # Set up logging
 logging.basicConfig(
@@ -210,6 +211,68 @@ def generate_filename(exif_data: dict, original_name: str) -> tuple:
     # Generate new filename
     return f"{prefix}{date_str}{ext}", date_source
 
+def organize_and_rename_photos():
+    src_dir = Path('deduplicated_photos')
+    dest_dir = Path('Photos')
+    if not src_dir.exists():
+        logger.error(f"Source directory {src_dir} does not exist!")
+        return
+    
+    image_files = [f for f in src_dir.glob('*') 
+                  if f.is_file() and f.suffix.lower() in ['.jpg', '.jpeg', '.png']]
+    
+    moved_count = 0
+    for image_path in image_files:
+        exif_data = get_exif_data(image_path)
+        new_filename, _ = generate_filename(exif_data, image_path.name)
+        prefix = get_prefix(image_path.name)
+        # Clean up prefix for folder naming
+        if prefix == 'SCAN_':
+            if image_path.name.startswith('scandanavianinininini_'):
+                group = 'Scandinavian Scans'
+            else:
+                group = 'Scans'
+        elif prefix == 'SET_':
+            group = 'Sets'
+        elif prefix == 'PIC_':
+            group = 'Pictures'
+        else:
+            group = prefix.rstrip('_')
+        # Extract year from new filename (format: PREFIXYYYYMMDD_HHMMSS.ext)
+        year = None
+        try:
+            year = int(new_filename[len(prefix):len(prefix)+4])
+        except Exception:
+            year = None
+        if year and 1800 <= year <= 2100:
+            decade = f"{year//10*10}s"
+        else:
+            decade = 'Unknown'
+        target_folder = dest_dir / group / decade
+        target_folder.mkdir(parents=True, exist_ok=True)
+        target_path = target_folder / new_filename
+        # Handle name collisions by appending a unique suffix
+        if target_path.exists():
+            stem = target_path.stem
+            suffix = target_path.suffix
+            i = 1
+            while True:
+                alt_target_path = target_folder / f"{stem}_{i}{suffix}"
+                if not alt_target_path.exists():
+                    target_path = alt_target_path
+                    break
+                i += 1
+        try:
+            image_path.rename(target_path)
+            moved_count += 1
+            logger.info(f"Moved {image_path.name} -> {target_path}")
+        except Exception as e:
+            logger.error(f"Failed to move {image_path.name}: {e}")
+    # Final summary
+    remaining = len([f for f in src_dir.glob('*') if f.is_file() and f.suffix.lower() in ['.jpg', '.jpeg', '.png']])
+    print(f"\nMoved and renamed {moved_count} photos into organized folders under {dest_dir}/")
+    print(f"{remaining} photos remain in {src_dir}/ (should be 0 if all moved)")
+
 def main():
     input_dir = Path('deduplicated_photos')
     if not input_dir.exists():
@@ -267,4 +330,10 @@ def main():
         print(f"{image_path.name:<40} {new_name:<40} {date_source:<20}")
 
 if __name__ == '__main__':
-    main() 
+    parser = argparse.ArgumentParser(description='EXIF preview and photo organizer')
+    parser.add_argument('--organize', action='store_true', help='Organize and rename photos into Photos/<Group>/<Decade>/')
+    args = parser.parse_args()
+    if args.organize:
+        organize_and_rename_photos()
+    else:
+        main() 

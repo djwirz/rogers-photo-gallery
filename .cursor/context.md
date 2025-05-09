@@ -13,6 +13,19 @@ This is a family photo gallery project with specific implementation phases and c
 - Minimal maintenance
 - Automated deduplication
 - Local development first approach
+- MUST use photoview/photoview:latest (DO NOT change version)
+
+## Implementation Rules
+
+- All version changes are BLOCKED
+- All image tags must use :latest
+- No custom Dockerfile modifications
+- Follow official Photoview paths:
+  - Photos: /photos (read-only)
+  - Cache: /app/cache
+  - Database: MariaDB 10.5
+- Never modify these paths
+- Never change versions
 
 ## Implementation Phases
 

@@ -1,4 +1,15 @@
 {
+  "metadata": {
+    "source_of_truth": true,
+    "purpose": "Single source of truth for project constraints",
+    "usage": "Used programmatically by AI assistant to enforce project boundaries",
+    "warning": "DO NOT create additional constraint files - all constraints must be maintained here",
+    "format_rules": {
+      "no_comments": true,
+      "strict_json": true,
+      "no_trailing_commas": true
+    }
+  },
   "project": {
     "name": "Rogers Photo Gallery",
     "type": "family photo gallery",
@@ -19,6 +30,13 @@
     "maintenance": {
       "level": "minimal",
       "automation": "preferred"
+    },
+    "database": {
+      "verification_required": true,
+      "schema_validation": true,
+      "data_integrity": true,
+      "performance_monitoring": true,
+      "backup_required": true
     }
   },
   "implementation_phases": {
@@ -33,7 +51,10 @@
         "required_tasks": [
           "docker_environment_setup",
           "directory_structure_testing",
-          "exif_data_validation"
+          "exif_data_validation",
+          "database_verification",
+          "schema_validation",
+          "data_integrity_check"
         ],
         "dependencies": ["phase1_complete", "phase2_complete"]
       },
@@ -43,7 +64,9 @@
           "volume_configuration",
           "deployment_process",
           "monitoring_setup",
-          "backup_strategy"
+          "backup_strategy",
+          "database_deployment",
+          "database_monitoring"
         ],
         "dependencies": ["local_development_complete"]
       },
@@ -53,7 +76,9 @@
           "photo_organization",
           "deployment_verification",
           "full_migration",
-          "final_testing"
+          "final_testing",
+          "database_migration",
+          "database_optimization"
         ],
         "dependencies": ["deployment_strategy_complete"]
       }
@@ -67,7 +92,10 @@
       "volume_persistence",
       "timeline_view",
       "exif_display",
-      "directory_based_albums"
+      "directory_based_albums",
+      "database_verification",
+      "schema_validation",
+      "data_integrity"
     ],
     "blocked_features": [
       "complex_auth",
@@ -101,7 +129,10 @@
       "simple_sharing",
       "read_only_media",
       "local_development",
-      "volume_persistence"
+      "volume_persistence",
+      "database_verification",
+      "schema_validation",
+      "data_integrity"
     ],
     "storage_constraints": {
       "volumes": {
@@ -114,13 +145,17 @@
       }
     },
     "photoview_config": {
-      "media_path": "/data/photos",
+      "version": "latest",
+      "media_path": "/photos",
       "database_path": "/data/photoview.db",
-      "cache_path": "/data/cache",
+      "cache_path": "/app/cache",
       "initial_scan": true,
       "read_only": true,
       "file_system_source_of_truth": true,
-      "local_development": true
+      "local_development": true,
+      "database_verification": true,
+      "schema_validation": true,
+      "data_integrity": true
     },
     "photoview_principles": {
       "file_system_source_of_truth": true,
@@ -128,13 +163,19 @@
       "read_only_media": true,
       "cache_based_thumbnails": true,
       "directory_based_albums": true,
-      "local_testing_first": true
+      "local_testing_first": true,
+      "database_verification_first": true,
+      "schema_validation_required": true,
+      "data_integrity_required": true
     },
     "development_workflow": {
       "local_testing": true,
       "small_batch_verification": true,
       "incremental_deployment": true,
       "documentation_required": true,
+      "database_verification_required": true,
+      "schema_validation_required": true,
+      "data_integrity_required": true,
       "version_control": {
         "allowed": false,
         "reason": "Version control operations must be performed manually by the user",
