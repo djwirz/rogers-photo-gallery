@@ -44,6 +44,8 @@ This is a family photo gallery project with specific implementation phases and c
 - Follow deduplication results
 - Test locally before deployment
 - Document all changes
+- Keep configuration simple
+- Use default settings where possible
 
 ## File Structure
 
@@ -75,3 +77,11 @@ This is a family photo gallery project with specific implementation phases and c
    - Track storage usage
    - Maintain backups
    - Update documentation
+
+## Photoview Configuration
+
+- Use default Photoview settings where possible
+- Configure only essential environment variables
+- Maintain read-only media access
+- Let Photoview handle scanning automatically
+- Keep configuration simple and minimal

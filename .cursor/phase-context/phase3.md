@@ -12,7 +12,7 @@ Priority: High
 
 - [ ] 1. Local Docker Environment
 
-  - [ ] Set up Docker environment
+  - [ ] Set up basic Docker environment
   - [ ] Configure Photoview container
   - [ ] Test with test_photos directory
   - [ ] Document setup process
@@ -76,15 +76,12 @@ Priority: High
 - Directory structure testing
 - Incremental deployment approach
 
-### Auto-Scanning Disabled
+### Photoview Configuration
 
-- Auto-scanning is intentionally disabled (PHOTOVIEW_SCAN_INTERVAL = "0")
-- Only initial scan on deployment is performed (PHOTOVIEW_INITIAL_SCAN = "true")
-- This is a deliberate choice because:
-  1. Photos are static and included in deployment image
-  2. No runtime file uploads or modifications
-  3. Reduces unnecessary system load
-  4. Matches the read-only, static nature of the gallery
+- Use default Photoview settings where possible
+- Configure only essential environment variables
+- Maintain read-only media access
+- Let Photoview handle scanning automatically
 
 ## Current State
 
@@ -133,9 +130,9 @@ Priority: High
 1. Dockerfile Requirements
 
    - Base image: Official Photoview image
-   - Copy photos during build
-   - Set correct permissions
+   - Essential environment variables only
    - Maintain volume mounts
+   - Keep configuration simple
 
 2. Volume Usage
 

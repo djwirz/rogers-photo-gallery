@@ -117,9 +117,7 @@
       "media_path": "/data/photos",
       "database_path": "/data/photoview.db",
       "cache_path": "/data/cache",
-      "scan_interval": "0",
       "initial_scan": true,
-      "auto_scanning": false,
       "read_only": true,
       "file_system_source_of_truth": true,
       "local_development": true

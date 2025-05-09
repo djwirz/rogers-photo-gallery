@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  db:
+    image: mariadb:10.5
+    environment:
+      - MYSQL_DATABASE=photoview
+      - MYSQL_USER=photoview
+      - MYSQL_PASSWORD=photoview
+      - MYSQL_RANDOM_ROOT_PASSWORD=1
+    volumes:
+      - db_data:/var/lib/mysql
+
+  photoview:
+    build: .
+    ports:
+      - "8081:8080"
+    depends_on:
+      - db
+    volumes:
+      - ./test_photos:/data/photos:ro
+      - photoview_cache:/data/cache
+    environment:
+      - PHOTOVIEW_ADMIN_USERNAME=admin
+      - PHOTOVIEW_ADMIN_PASSWORD=changeme123
+      - PHOTOVIEW_MEDIA_PATH=/data/photos
+      - PHOTOVIEW_INITIAL_SCAN=true
+      - PHOTOVIEW_MYSQL_URL=photoview:photoview@tcp(db)/photoview
+
+volumes:
+  photoview_cache:
+  db_data: 
