@@ -12,6 +12,7 @@ This is a family photo gallery project with specific implementation phases and c
 - No proprietary lock-in
 - Minimal maintenance
 - Automated deduplication
+- Local development first approach
 
 ## Implementation Phases
 
@@ -28,8 +29,10 @@ This is a family photo gallery project with specific implementation phases and c
    - User access setup
 
 3. Data Migration
-   - Bulk upload process
-   - Metadata verification
+   - Local development and testing
+   - Directory structure verification
+   - Small batch deployment
+   - Full photo set migration
    - Timeline view testing
 
 ## Context Rules
@@ -39,11 +42,36 @@ This is a family photo gallery project with specific implementation phases and c
 - Maintain family-friendly focus
 - Preserve existing metadata
 - Follow deduplication results
+- Test locally before deployment
+- Document all changes
 
 ## File Structure
 
 - `deduplicated_photos/` - Processed photos
 - `photos_to_process/` - Source photos
 - `duplicate_photos/` - Identified duplicates
+- `test_photos/` - Test photo sets
 - Python scripts for processing
 - Configuration files for deployment
+
+## Development Workflow
+
+1. Local Development
+
+   - Test with Docker locally
+   - Verify directory structure
+   - Test with small photo sets
+   - Document all changes
+
+2. Deployment Process
+
+   - Verify local testing
+   - Deploy in small batches
+   - Test each deployment
+   - Document results
+
+3. Maintenance
+   - Monitor performance
+   - Track storage usage
+   - Maintain backups
+   - Update documentation

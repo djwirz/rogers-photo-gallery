@@ -16,6 +16,7 @@ A simple photo gallery solution for sharing family photos with extended family.
 - ✅ Local preprocessing for deduplication and organization
 - ✅ Cloud hosting via Fly.io with persistent storage
 - ✅ Photoview-based interface for easy family access
+- 🔄 Local development and testing
 - ⏳ Image-based deployment with photos included
 
 ## Current Status
@@ -32,12 +33,14 @@ A simple photo gallery solution for sharing family photos with extended family.
 
 ### In Progress
 
-- 🔄 Deployment image preparation
-- 🔄 Timeline view testing
-- 🔄 Sharing configuration testing
+- 🔄 Local development environment setup
+- 🔄 Directory structure testing
+- 🔄 Small batch verification
+- 🔄 Deployment strategy refinement
 
 ### Upcoming
 
+- ⏳ Full photo set migration
 - ⏳ Family member onboarding
 - ⏳ Usage monitoring and optimization
 - ⏳ Backup strategy implementation
@@ -51,6 +54,7 @@ A simple photo gallery solution for sharing family photos with extended family.
 - `deduplicated_photos/` - Processed photos for deployment
 - `photos_to_process/` - Source photos
 - `duplicate_photos/` - Identified duplicates
+- `test_photos/` - Test photo sets
 - Python scripts for processing
 - Configuration files for deployment
 
@@ -62,6 +66,21 @@ This project uses a context-based development workflow to maintain focus and pre
 2. Reference the appropriate phase context in `.cursor/phase-context/`
 3. Maintain the project's core goals defined in `.cursor/context.md`
 4. Document all changes according to the phase requirements
+
+## Local Development
+
+1. Set up Docker environment
+2. Test directory structure
+3. Verify EXIF data
+4. Test with small batches
+5. Document all changes
+
+## Deployment Process
+
+1. Verify local testing
+2. Deploy in small batches
+3. Test each deployment
+4. Document results
 
 ## Documentation
 
@@ -103,28 +122,30 @@ The initial deduplication run processed 3,390 images and identified 14 pairs of 
 - ✅ Basic authentication enabled
 - ✅ Timeline view configured
 - ✅ Metadata display enabled
-- ✅ Auto-scanning configured (hourly)
+- 🔄 Local development environment setup
+- ⏳ Directory structure testing
 
 ### Deployment Strategy
 
-1. Image-Based Deployment
+1. Local Development
 
-   - Photos included in deployment image
-   - No runtime file uploads
-   - Read-only access to media
-   - Automatic scanning on startup
+   - Set up Docker environment
+   - Test directory structure
+   - Verify EXIF data
+   - Document changes
 
-2. Volume Usage
+2. Deployment Process
 
-   - /data/photos: Read-only mount for media
-   - /data/cache: Writable for thumbnails
-   - /data/photoview.db: Database storage
+   - Test with small batches
+   - Verify persistence
+   - Check metadata
+   - Document results
 
-3. File System Principles
-   - Filesystem as source of truth
-   - No post-deployment modifications
-   - Original files never modified
-   - Automatic scanning only
+3. Maintenance
+   - Monitor performance
+   - Track storage usage
+   - Maintain backups
+   - Update documentation
 
 ### Access Information
 
@@ -132,19 +153,13 @@ The initial deduplication run processed 3,390 images and identified 14 pairs of 
 - Admin credentials are stored securely in Fly.io configuration
 - Photos are stored in the persistent volume at `/data`
 
-### Maintenance
-
-- The application automatically scans for new photos hourly
-- Storage automatically extends up to 5GB as needed
-- Health checks ensure service availability
-- Regular backups are maintained through the local photo collection
-
 ### Next Steps
 
-1. Create deployment image with photos
-2. Test sharing functionality with family members
-3. Monitor usage and optimize performance
-4. Document family member onboarding process
+1. Set up local development environment
+2. Test directory structure
+3. Verify EXIF data
+4. Test with small batches
+5. Document findings
 
 ## Implementation Plan
 

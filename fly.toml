@@ -2,36 +2,15 @@ app = "rogers-photo-gallery"
 primary_region = "sjc"
 
 [build]
-  image = "photoview/photoview:latest"
+  dockerfile = "Dockerfile"
 
 [env]
-  PHOTOVIEW_DATABASE_DRIVER = "sqlite"
-  PHOTOVIEW_DATABASE_PATH = "/data/photoview.db"
-  PHOTOVIEW_MEDIA_CACHE = "/data/cache"
-  PHOTOVIEW_MEDIA_PATH = "/data/photos"
-  PHOTOVIEW_SERVE_UI = "true"
   PHOTOVIEW_ADMIN_USERNAME = "admin"
   PHOTOVIEW_ADMIN_PASSWORD = "changeme123"
-  PHOTOVIEW_DISABLE_VIDEOS = "true"
-  PHOTOVIEW_DISABLE_RAW = "true"
-  PHOTOVIEW_DISABLE_FACES = "true"
-  PHOTOVIEW_DISABLE_MAP = "true"
-  PHOTOVIEW_DISABLE_TIMELINE = "false"
-  PHOTOVIEW_DISABLE_ARCHIVE = "true"
-  PHOTOVIEW_DISABLE_FAVORITES = "false"
-  PHOTOVIEW_DISABLE_PUBLIC_SHARING = "true"
-  PHOTOVIEW_SCAN_INTERVAL = "1h"
-  PHOTOVIEW_INITIAL_SCAN = "true"
-  PHOTOVIEW_LISTEN_IP = "0.0.0.0"
-  PHOTOVIEW_LISTEN_PORT = "8080"
 
 [[mounts]]
-  source = "photoview_data"
+  source = "photoview_db"
   destination = "/data"
-  initial_size = "2GB"
-  auto_extend_size_threshold = 80
-  auto_extend_size_increment = "1GB"
-  auto_extend_size_limit = "5GB"
 
 [processes]
   app = "photoview"

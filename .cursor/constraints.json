@@ -28,9 +28,11 @@
       "photoview_setup",
       "basic_auth",
       "simple_sharing",
-      "auto_scanning",
+      "local_development",
+      "volume_persistence",
       "timeline_view",
-      "exif_display"
+      "exif_display",
+      "directory_based_albums"
     ],
     "blocked_features": [
       "complex_auth",
@@ -40,14 +42,18 @@
       "video_support",
       "face_recognition",
       "map_view",
-      "raw_support"
+      "raw_support",
+      "runtime_uploads",
+      "post_deployment_modifications",
+      "version_control_operations"
     ]
   },
   "file_structure": {
     "required_directories": [
       "deduplicated_photos",
       "photos_to_process",
-      "duplicate_photos"
+      "duplicate_photos",
+      "test_photos"
     ],
     "allowed_extensions": [".jpg", ".jpeg", ".png"]
   },
@@ -58,7 +64,9 @@
       "persistent_storage",
       "basic_auth",
       "simple_sharing",
-      "read_only_media"
+      "read_only_media",
+      "local_development",
+      "volume_persistence"
     ],
     "storage_constraints": {
       "volumes": {
@@ -74,18 +82,38 @@
       "media_path": "/data/photos",
       "database_path": "/data/photoview.db",
       "cache_path": "/data/cache",
-      "scan_interval": "1h",
+      "scan_interval": "0",
       "initial_scan": true,
-      "auto_scanning": true,
+      "auto_scanning": false,
       "read_only": true,
-      "file_system_source_of_truth": true
+      "file_system_source_of_truth": true,
+      "local_development": true
     },
     "photoview_principles": {
       "file_system_source_of_truth": true,
       "original_files_untouched": true,
       "read_only_media": true,
       "cache_based_thumbnails": true,
-      "directory_based_albums": true
+      "directory_based_albums": true,
+      "local_testing_first": true
+    },
+    "development_workflow": {
+      "local_testing": true,
+      "small_batch_verification": true,
+      "incremental_deployment": true,
+      "documentation_required": true,
+      "version_control": {
+        "allowed": false,
+        "reason": "Version control operations must be performed manually by the user",
+        "blocked_operations": [
+          "commit",
+          "push",
+          "pull",
+          "merge",
+          "branch",
+          "rebase"
+        ]
+      }
     }
   }
 }
