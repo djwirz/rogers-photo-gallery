@@ -1,5 +1,72 @@
 # Phase 3: Data Migration
 
+## Current Phase Status
+
+Phase: 3 of 3
+Status: In Progress
+Priority: High
+
+## Implementation Checklist
+
+### Phase 3A: Local Development (Current Focus)
+
+- [ ] 1. Local Docker Environment
+
+  - [ ] Set up Docker environment
+  - [ ] Configure Photoview container
+  - [ ] Test with test_photos directory
+  - [ ] Document setup process
+
+- [ ] 2. Directory Structure Testing
+
+  - [ ] Verify /data/photos mount
+  - [ ] Test read-only permissions
+  - [ ] Validate cache directory
+  - [ ] Document structure
+
+- [ ] 3. EXIF Data Validation
+  - [ ] Test with 5 sample photos
+  - [ ] Verify metadata display
+  - [ ] Check timeline ordering
+  - [ ] Document results
+
+### Phase 3B: Deployment Strategy (Next)
+
+- [ ] 1. Volume Configuration
+
+  - [ ] Set up 2GB initial volume
+  - [ ] Configure auto-extend
+  - [ ] Test persistence
+  - [ ] Document settings
+
+- [ ] 2. Deployment Process
+
+  - [ ] Create deployment checklist
+  - [ ] Test small batch deployment
+  - [ ] Verify persistence
+  - [ ] Document process
+
+- [ ] 3. Monitoring & Backup
+  - [ ] Set up health checks
+  - [ ] Configure monitoring
+  - [ ] Plan backup strategy
+  - [ ] Document procedures
+
+### Phase 3C: Migration Process (Final)
+
+- [ ] 1. Photo Organization
+
+  - [ ] Verify deduplication
+  - [ ] Check EXIF data
+  - [ ] Organize by date
+  - [ ] Document structure
+
+- [ ] 2. Full Migration
+  - [ ] Deploy in batches
+  - [ ] Verify each batch
+  - [ ] Test all features
+  - [ ] Document results
+
 ## Design Decisions
 
 ### Local Development First
@@ -18,30 +85,6 @@
   2. No runtime file uploads or modifications
   3. Reduces unnecessary system load
   4. Matches the read-only, static nature of the gallery
-- DO NOT re-enable auto-scanning as it's unnecessary overhead
-
-## Current Status
-
-### Phase 3A: Local Development
-
-- [ ] Local Docker environment setup
-- [ ] Directory structure testing
-- [ ] Small batch verification
-- [ ] EXIF data validation
-
-### Phase 3B: Deployment Strategy
-
-- [ ] Volume configuration
-- [ ] Deployment process
-- [ ] Monitoring setup
-- [ ] Backup strategy
-
-### Phase 3C: Migration Process
-
-- [ ] Photo organization
-- [ ] Deployment verification
-- [ ] Full migration
-- [ ] Final testing
 
 ## Current State
 
@@ -51,72 +94,6 @@
 - Directory structure testing required
 - Volume persistence confirmed
 - Storage auto-extend configured (2GB initial, up to 5GB max)
-
-## Constraint Context
-
-Reference: `.cursor/context/constraints.md`
-
-Key Constraints:
-
-- Project Scale: 3000 photos, 1GB storage
-- File Types: .jpg, .jpeg, .png only
-- Media Access: Read-only required
-- Volume-based persistence
-- No runtime file uploads
-- No post-deployment modifications
-- Storage: 2GB initial, auto-extends to 5GB max
-- Local development first approach
-
-## Implementation Rules
-
-1. Local Development
-
-   - Set up Docker environment
-   - Test directory structure
-   - Verify EXIF data
-   - Document all changes
-
-2. Volume Management
-
-   - Use single volume mounted at /data
-   - Mount photos directory read-only
-   - Let Photoview handle caching
-   - No post-deployment file modifications
-
-3. File Organization
-
-   - Place files in /data/photos
-   - Maintain original filenames
-   - Preserve EXIF data
-   - Test with small batches
-
-4. Deployment Process
-   - Test locally first
-   - Deploy in small batches
-   - Verify each deployment
-   - Document all changes
-
-## Testing Strategy
-
-1. Local Testing
-
-   - Set up Docker environment
-   - Test directory structure
-   - Verify EXIF data
-   - Test with small batches
-
-2. Deployment Testing
-
-   - Test volume configuration
-   - Verify persistence
-   - Check metadata
-   - Validate display
-
-3. Final Testing
-   - Test full photo set
-   - Verify all features
-   - Check performance
-   - Document results
 
 ## Success Criteria
 
@@ -128,14 +105,6 @@ Key Constraints:
 - Thumbnails generated correctly
 - Original files unchanged
 
-## Next Steps
-
-1. Set up local development environment
-2. Test directory structure
-3. Verify EXIF data
-4. Test with small batches
-5. Document findings
-
 ## Error Handling
 
 - If local setup fails: Check Docker configuration
@@ -143,28 +112,6 @@ Key Constraints:
 - If metadata missing: Check EXIF data
 - If scanner fails: Check Photoview logs
 - If persistence issues: Verify volume configuration
-
-## Development Workflow
-
-1. Local Development
-
-   - Set up Docker environment
-   - Test directory structure
-   - Verify EXIF data
-   - Document changes
-
-2. Deployment
-
-   - Test with small batches
-   - Verify persistence
-   - Check metadata
-   - Document results
-
-3. Maintenance
-   - Monitor performance
-   - Track storage usage
-   - Maintain backups
-   - Update documentation
 
 ## Photoview Core Principles
 
@@ -176,17 +123,10 @@ Key Constraints:
    - Read-only access to media
 
 2. Original Files Never Modified
-
    - Media directory is read-only
    - Thumbnails stored in separate cache
    - No modifications to original files
    - No runtime file uploads
-
-3. Automatic Scanning
-   - Hourly directory scanning
-   - Automatic thumbnail generation
-   - EXIF data extraction
-   - No manual intervention required
 
 ## Image-Based Deployment Rules
 
