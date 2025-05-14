@@ -49,4 +49,16 @@ Thumbs.db
 
 # Monitoring and logs
 monitoring/
-*.log 
+*.log
+
+# Sensitive files
+.env
+*.key
+*.pem
+*.crt
+*.p12
+*.pfx
+secrets/
+credentials/
+.secrets
+.credentials 
