@@ -300,37 +300,48 @@ def fix_dates_in_photos():
     for image_path in image_files:
         exif_data = get_exif_data(image_path)
         intended_date_str, _ = extract_date(exif_data, str(image_path))
+        
+        # Always ensure we have a valid date, defaulting to 1900 if needed
+        if not intended_date_str or not is_valid_date(intended_date_str):
+            intended_date_str = '19000101_000000'
+        
         # Format: YYYYMMDD_HHMMSS
         try:
             dt = datetime.strptime(intended_date_str, '%Y%m%d_%H%M%S')
         except Exception:
-            logger.warning(f"Could not parse intended date for {image_path.name}, skipping.")
-            continue
+            logger.warning(f"Could not parse intended date for {image_path.name}, using 1900.")
+            dt = datetime(1900, 1, 1)
+        
         # Set mtime
         ts = mktime(dt.timetuple())
         try:
             os.utime(image_path, (ts, ts))
         except Exception as e:
             logger.error(f"Failed to set mtime for {image_path.name}: {e}")
-        # Set EXIF DateTimeOriginal if missing or wrong
+        
+        # Always set EXIF dates to prevent 2025 fallback
         try:
             exif_dict = piexif.load(str(image_path))
-            exif_dt = exif_dict['Exif'].get(piexif.ExifIFD.DateTimeOriginal)
             exif_dt_str = dt.strftime('%Y:%m:%d %H:%M:%S')
-            needs_update = (
-                not exif_dt or
-                (isinstance(exif_dt, bytes) and exif_dt.decode(errors='ignore') != exif_dt_str)
-            )
-            if needs_update:
-                exif_dict['Exif'][piexif.ExifIFD.DateTimeOriginal] = exif_dt_str.encode()
-                exif_dict['Exif'][piexif.ExifIFD.DateTimeDigitized] = exif_dt_str.encode()
-                exif_dict['0th'][piexif.ImageIFD.DateTime] = exif_dt_str.encode()
-                exif_bytes = piexif.dump(exif_dict)
-                piexif.insert(exif_bytes, str(image_path))
-                logger.info(f"Updated EXIF date for {image_path.name} -> {exif_dt_str}")
-                fixed_count += 1
+            
+            # Ensure Exif dict has all necessary sections
+            if 'Exif' not in exif_dict:
+                exif_dict['Exif'] = {}
+            if '0th' not in exif_dict:
+                exif_dict['0th'] = {}
+            
+            # Set all date fields
+            exif_dict['Exif'][piexif.ExifIFD.DateTimeOriginal] = exif_dt_str.encode()
+            exif_dict['Exif'][piexif.ExifIFD.DateTimeDigitized] = exif_dt_str.encode()
+            exif_dict['0th'][piexif.ImageIFD.DateTime] = exif_dt_str.encode()
+            
+            exif_bytes = piexif.dump(exif_dict)
+            piexif.insert(exif_bytes, str(image_path))
+            logger.info(f"Updated EXIF date for {image_path.name} -> {exif_dt_str}")
+            fixed_count += 1
         except Exception as e:
             logger.error(f"Failed to update EXIF for {image_path.name}: {e}")
+    
     print(f"\nFixed dates for {fixed_count} images in {src_dir}/ (EXIF and mtime)")
 
 def main():

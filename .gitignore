@@ -2,6 +2,9 @@
 photos_to_process/
 deduplicated_photos/
 duplicate_photos/
+Photos/
+test_photos/
+local_test/
 
 # Python
 __pycache__/
@@ -42,4 +45,8 @@ ENV/
 .Spotlight-V100
 .Trashes
 ehthumbs.db
-Thumbs.db 
+Thumbs.db
+
+# Monitoring and logs
+monitoring/
+*.log 

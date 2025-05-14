@@ -40,6 +40,12 @@
       "data_integrity": true,
       "performance_monitoring": true,
       "backup_required": true
+    },
+    "log_monitoring": {
+      "mode": "discrete_cli",
+      "continuous_streaming_supported": false,
+      "user_action_required_for_live_logs": true,
+      "note": "Assistant uses CLI commands for logs; for real-time monitoring, user should run 'flyctl logs -f' manually."
     }
   },
   "implementation_phases": {
@@ -121,7 +127,9 @@
       "duplicate_photos",
       "test_photos"
     ],
-    "allowed_extensions": [".jpg", ".jpeg", ".png"]
+    "allowed_extensions": [".jpg", ".jpeg", ".png"],
+    "no_zip_uploads": "Zip files must not be uploaded to production. Extraction must be done locally before upload. Only extracted .jpg, .jpeg, and .png files are allowed in /data/photos.",
+    "image_staging_allowed": "It is allowed and recommended to include photos in a staging directory in the image (e.g., /app/photos-staging) and copy them into the mounted volume (/data/photos) at runtime if the volume is empty. This enables initial data seeding or redeployment without SFTP."
   },
   "deployment": {
     "platform": "fly.io",
@@ -195,5 +203,16 @@
         ]
       }
     }
+  },
+  "log_monitoring_workflow": {
+    "description": "All Fly.io log monitoring must use discrete CLI commands, not continuous streaming, in accordance with project constraints and Cursor assistant limitations. Use the --no-tail flag for reliable, non-streaming log review.",
+    "recommended_commands": [
+      "flyctl logs -a rogers-photo-gallery --no-tail | tail -n 100",
+      "flyctl logs -a rogers-photo-gallery --no-tail | grep -i error | tail -n 50"
+    ],
+    "realtime_streaming_note": "For real-time log streaming, the user should run: flyctl logs -a rogers-photo-gallery -f",
+    "assistant_policy": "The assistant must always use the above discrete commands for log review and troubleshooting. Previous approaches without --no-tail may hang or fail to show current logs.",
+    "event_troubleshooting": "If troubleshooting a specific event (e.g., scan), note the UTC time and filter logs by timestamp or keyword as needed.",
+    "scope": "This workflow supersedes any previous log monitoring instructions for both dev and prod."
   }
 }

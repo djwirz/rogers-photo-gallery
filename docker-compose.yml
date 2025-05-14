@@ -21,20 +21,25 @@ services:
     ports:
       - "8081:8080"
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     volumes:
-      - ./Photos:/photos:ro
+      - ./test_photos:/photos:ro
       - photoview_cache:/app/cache
     environment:
       - PHOTOVIEW_DATABASE_DRIVER=mysql
-      - PHOTOVIEW_MYSQL_URL=photoview:photoview@tcp(db:3306)/photoview
+      - PHOTOVIEW_MYSQL_URL=photoview:photoview@tcp(db)/photoview
+      - PHOTOVIEW_LISTEN_IP=photoview
       - PHOTOVIEW_LISTEN_PORT=8080
       - PHOTOVIEW_MEDIA_CACHE=/app/cache
       - PHOTOVIEW_MEDIA_PATH=/photos
-      - PHOTOVIEW_DISABLE_FACE_RECOGNITION=true
-      - PHOTOVIEW_DISABLE_VIDEO_TRANSCODING=true
-      - PHOTOVIEW_DISABLE_RAW_PROCESSING=true
+      - PHOTOVIEW_ADMIN_PASSWORD=changeme123
+      - PHOTOVIEW_ADMIN_USERNAME=admin
+    healthcheck:
+      test: ["CMD", "mysql", "-h", "db", "-u", "photoview", "-pphotoview", "photoview", "-e", "SELECT COUNT(*) FROM media;"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
 volumes:
   photoview_cache:

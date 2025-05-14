@@ -14,6 +14,7 @@ primary_region = "sjc"
   PHOTOVIEW_DATABASE_DRIVER = "sqlite"
   PHOTOVIEW_SQLITE_PATH = "/data/photoview.db"
   PHOTOVIEW_INITIAL_SCAN = "true"
+  PHOTOVIEW_DISABLE_FACE_RECOGNITION = "1"
 
 [[mounts]]
   source = "photoview_data"

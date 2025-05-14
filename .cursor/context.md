@@ -17,6 +17,8 @@ This is a family photo gallery project with specific implementation phases and c
 - Only one persistent volume may be mounted per Fly.io machine (see Fly.io docs and project constraints)
 - Both the photo library and the Photoview database must reside on the same volume
 - Use `/data/photos` for all media files and `/data/photoview.db` for the database
+- Do NOT upload zip files to production. The Fly.io instance does not include unzip or similar tools. All extraction must be done locally before upload. Only extracted .jpg, .jpeg, and .png files should be uploaded to /data/photos.
+- It is allowed and recommended to include photos in a staging directory in the image (e.g., /app/photos-staging) and copy them into the mounted volume (/data/photos) at runtime if the volume is empty. This enables initial data seeding or redeployment without SFTP.
 
 ## Implementation Rules
 
@@ -112,3 +114,11 @@ This is a family photo gallery project with specific implementation phases and c
 - In production (Fly.io), you must manually upload or create /data/photos on the persistent volume.
 - The main production challenge is getting images into /data/photos, not gallery UI or database setup.
 - Use dev only for UI/database validation, not for storage or upload workflows.
+
+## Log Monitoring Workflow
+
+- All log monitoring and deployment actions are performed via discrete CLI commands (e.g., `flyctl deploy`, `flyctl logs`).
+- Continuous, real-time log streaming is not supported by the Cursor assistant; logs must be fetched manually after each deploy or action.
+- If real-time log monitoring is required, the user should run `flyctl logs -f` in a separate terminal.
+- The assistant will always use CLI commands for log retrieval and will not maintain a persistent log stream.
+- This constraint is intentional for predictability, security, and resource management.

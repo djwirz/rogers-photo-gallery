@@ -39,10 +39,10 @@ class ImageDeduplicator:
             return None
 
     def process_images(self):
-        """Process all images in the input directory."""
-        image_files = [f for f in self.input_dir.glob('*') 
-                      if f.is_file() 
-                      and f.suffix.lower() in ['.jpg', '.jpeg', '.png']]
+        """Process all images in the input directory and its subdirectories."""
+        image_files = []
+        for ext in ['.jpg', '.jpeg', '.png']:
+            image_files.extend(self.input_dir.rglob(f'*{ext}'))
         
         total_files = len(image_files)
         logger.info(f"Found {total_files} image files to process")
